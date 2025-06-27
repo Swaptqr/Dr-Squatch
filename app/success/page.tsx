@@ -251,7 +251,7 @@ export default function SuccessPage() {
           left: "0px",
           width: "100vw",
           height: "100vh",
-          backgroundImage: "url('/images/doctor_squatch_big_image.png')",
+          backgroundImage: "url('/Images/doctor_squatch_big_image.png')",
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -1132,7 +1132,7 @@ function SydneyRewardsPopup({ onClose }: { onClose: () => void }) {
 
                 {/* Sydney Sweeney image inside the soap puzzle piece */}
                 <image
-                  href="/images/sydney_sweeney.png"
+                  href="/Images/sydney_sweeney.png"
                   x="20"
                   y="20"
                   width="80"

@@ -246,7 +246,7 @@ export default function VideoBackground() {
             objectFit: "cover",
           }}
         >
-          <source src="/videos/doctor_squatch.mp4" type="video/mp4" />
+          <source src="/Videos/doctor_squatch.mp4" type="video/mp4" />
         </video>
 
         {/* Volume Button */}
