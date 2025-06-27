@@ -9,12 +9,14 @@ export default function VideoBackground() {
   const [isMuted, setIsMuted] = useState(true)
   const [showPopup, setShowPopup] = useState(false)
   const [email, setEmail] = useState("")
+  const [firstName, setFirstName] = useState("")
+  const [lastName, setLastName] = useState("")
+  const [phoneNumber, setPhoneNumber] = useState("")
   const [hasShownPopup, setHasShownPopup] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [error, setError] = useState("")
   const [glitchActive, setGlitchActive] = useState(false)
-  const [titleGlitch] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
@@ -61,17 +63,39 @@ export default function VideoBackground() {
     }
   }, [showPopup])
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setError("")
 
-    // Email validation
+    // Validation
+    if (!firstName.trim()) {
+      setError("Please enter your first name")
+      setIsSubmitting(false)
+      setGlitchActive(true)
+      setTimeout(() => setGlitchActive(false), 300)
+      return
+    }
+
+    if (!lastName.trim()) {
+      setError("Please enter your last name")
+      setIsSubmitting(false)
+      setGlitchActive(true)
+      setTimeout(() => setGlitchActive(false), 300)
+      return
+    }
+
+    if (!phoneNumber.trim() || !/^\+?[\d\s()-]+$/.test(phoneNumber)) {
+      setError("Please enter a valid phone number")
+      setIsSubmitting(false)
+      setGlitchActive(true)
+      setTimeout(() => setGlitchActive(false), 300)
+      return
+    }
+
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       setError("Please enter a valid email address")
       setIsSubmitting(false)
-
-      // Trigger glitch on error
       setGlitchActive(true)
       setTimeout(() => setGlitchActive(false), 300)
       return
@@ -80,12 +104,27 @@ export default function VideoBackground() {
     // Trigger glitch effect on submit
     setGlitchActive(true)
 
-    // Simulate API call
-    setTimeout(() => {
+    try {
+      const response = await fetch('/api/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          phoneNumber,
+          email,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to submit form')
+      }
+
       setIsSubmitting(false)
       setIsSubmitted(true)
       setGlitchActive(false)
-      console.log("Email submitted:", email)
 
       // Store email in localStorage for the success page
       localStorage.setItem("userEmail", email)
@@ -94,7 +133,12 @@ export default function VideoBackground() {
       setTimeout(() => {
         router.push("/success")
       }, 2000)
-    }, 1500)
+    } catch (error) {
+      console.error("Form submission error:", error)
+      setError("Failed to submit form. Please try again.")
+      setIsSubmitting(false)
+      setGlitchActive(false)
+    }
   }
 
   const closePopup = () => {
@@ -388,11 +432,143 @@ export default function VideoBackground() {
                         marginTop: "16px",
                       }}
                     >
-                      ENTER YOUR EMAIL TO CONTINUE
+                      ENTER YOUR DETAILS TO CONTINUE
                     </p>
                   </div>
 
-                  {/* Input field */}
+                  {/* First Name Input */}
+                  <div style={{ marginBottom: "16px", position: "relative" }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "6px",
+                        padding: "1px",
+                        background: "linear-gradient(90deg, #2a4b23, #c17a47)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          margin: "1px",
+                          borderRadius: "5px",
+                          background: "rgba(245, 245, 240, 0.97)",
+                        }}
+                      ></div>
+                    </div>
+                    <input
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      placeholder="FIRST.NAME"
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        background: "transparent",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#2a4b23",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.1em",
+                        position: "relative",
+                        zIndex: 10,
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Last Name Input */}
+                  <div style={{ marginBottom: "16px", position: "relative" }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "6px",
+                        padding: "1px",
+                        background: "linear-gradient(90deg, #2a4b23, #c17a47)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          margin: "1px",
+                          borderRadius: "5px",
+                          background: "rgba(245, 245, 240, 0.97)",
+                        }}
+                      ></div>
+                    </div>
+                    <input
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      placeholder="LAST.NAME"
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        background: "transparent",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#2a4b23",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.1em",
+                        position: "relative",
+                        zIndex: 10,
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Phone Number Input */}
+                  <div style={{ marginBottom: "16px", position: "relative" }}>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        borderRadius: "6px",
+                        padding: "1px",
+                        background: "linear-gradient(90deg, #2a4b23, #c17a47)",
+                      }}
+                    >
+                      <div
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          margin: "1px",
+                          borderRadius: "5px",
+                          background: "rgba(245, 245, 240, 0.97)",
+                        }}
+                      ></div>
+                    </div>
+                    <input
+                      type="tel"
+                      value={phoneNumber}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
+                      placeholder="+1234567890"
+                      style={{
+                        width: "100%",
+                        padding: "12px 16px",
+                        background: "transparent",
+                        border: "none",
+                        borderRadius: "6px",
+                        color: "#2a4b23",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.1em",
+                        position: "relative",
+                        zIndex: 10,
+                        outline: "none",
+                        boxSizing: "border-box",
+                      }}
+                      disabled={isSubmitting}
+                    />
+                  </div>
+
+                  {/* Email Input */}
                   <div style={{ marginBottom: "24px", position: "relative" }}>
                     <div
                       style={{
@@ -419,7 +595,7 @@ export default function VideoBackground() {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="ENTER.YOUR@EMAIL.COM"
+                      placeholder="YOUR@EMAIL.COM"
                       style={{
                         width: "100%",
                         padding: "12px 16px",

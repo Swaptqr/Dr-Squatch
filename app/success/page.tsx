@@ -6,7 +6,7 @@ import { X } from "lucide-react"
 import MyTubPopup from "@/components/my-tub-popup"
 
 export default function SuccessPage() {
-  const [userEmail, setUserEmail] = useState("")
+  const [, setUserEmail] = useState("")
   const [isLoading, setIsLoading] = useState(true)
   const [showSpeechBubble, setShowSpeechBubble] = useState(false)
   const [showForm, setShowForm] = useState(false)
@@ -833,16 +833,6 @@ function SydneyRewardsPopup({ onClose }: { onClose: () => void }) {
   const confettiCanvasRef = useRef<HTMLCanvasElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  // Trigger confetti when the popup appears
-  useEffect(() => {
-    // Delay to allow animation to complete
-    const timer = setTimeout(() => {
-      triggerConfetti()
-    }, 500)
-
-    return () => clearTimeout(timer)
-  }, [])
-
   // Trigger confetti function
   const triggerConfetti = () => {
     if (!confettiCanvasRef.current || !containerRef.current) return
@@ -928,6 +918,16 @@ function SydneyRewardsPopup({ onClose }: { onClose: () => void }) {
 
     animate()
   }
+
+  // Trigger confetti when the popup appears
+  useEffect(() => {
+    // Delay to allow animation to complete
+    const timer = setTimeout(() => {
+      triggerConfetti()
+    }, 500)
+
+    return () => clearTimeout(timer)
+  }, [triggerConfetti])
 
   // Effects when popup appears
   useEffect(() => {
@@ -1236,7 +1236,7 @@ function SydneyRewardsPopup({ onClose }: { onClose: () => void }) {
                   fontWeight: "600",
                 }}
               >
-                🎉 You've unlocked a Sydney Sweeney dinner Free Soap Piece! 🎉
+                🎉 You&apos;ve unlocked a Sydney Sweeney dinner Free Soap Piece! 🎉
               </p>
               <p
                 style={{
